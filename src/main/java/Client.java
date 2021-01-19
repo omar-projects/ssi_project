@@ -3,7 +3,7 @@ package fr.angers.univ.info.m2.acdi.reseau.client;
 import fr.angers.univ.info.m2.acdi.reseau.models.ClePrivee;
 import fr.angers.univ.info.m2.acdi.reseau.models.ClePublique;
 
-// remote
+// remote 2
 
 public class Client {
 	private ClePrivee m_clePrivee;
