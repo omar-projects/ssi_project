@@ -1,15 +1,19 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigInteger;
 import java.util.Random;
 
 public class PublicKey {
 
+    final Logger logger = LoggerFactory.getLogger(PublicKey.class);
 
 //    p, q, n, m, e
     private BigInteger p;
     private BigInteger q;
     private BigInteger n;
     private BigInteger m;
-    private BigInteger e;
+    private int e;
 
     /**
      * Crée une clef publique
@@ -17,6 +21,7 @@ public class PublicKey {
      * m = (p-1)*(q-1)
      */
     public PublicKey() {
+        logger.info("lancement constructeur PublicKey()");
         this.p = BigInteger.probablePrime(1999, new Random());
         this.q = BigInteger.probablePrime(1999, new Random());
         while(p.equals(q)){
@@ -25,10 +30,10 @@ public class PublicKey {
         this.n = this.p.multiply(q);
         this.m = (this.p.subtract(BigInteger.ONE)).multiply(this.q.subtract(BigInteger.ONE));
         // génération de e : un nombre premier avec m
-        int varE = new Random().nextInt();         
+        this.e = new Random().nextInt();
         // tant que e est pair ou il n'est pas premier avec m on lui donne une nouvelle valeure
-        while(varE % 2 == 0 || !this.m.gcd(BigInteger.valueOf(varE)).equals(BigInteger.ONE)){
-            this.e = BigInteger.valueOf(new Random().nextLong());
+        while(this.e % 2 == 0 || !this.m.gcd(BigInteger.valueOf(this.e)).equals(BigInteger.ONE)){
+            this.e = new Random().nextInt();
         }
     }
 
@@ -43,6 +48,9 @@ public class PublicKey {
         return stringBuilder.toString();
     }
 
+    public Logger getLogger() {
+        return logger;
+    }
 
     public BigInteger getP() {
         return p;
@@ -60,7 +68,7 @@ public class PublicKey {
         return m;
     }
 
-    public BigInteger getE() {
+    public int getE() {
         return e;
     }
 
