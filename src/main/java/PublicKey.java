@@ -72,4 +72,23 @@ public class PublicKey {
         return e;
     }
 
+    public void setP(BigInteger p) {
+        this.p = p;
+    }
+
+    public void setQ(BigInteger q) {
+        this.q = q;
+    }
+
+    public void setN(BigInteger n) {
+        this.n = n;
+    }
+
+    public void setM(BigInteger m) {
+        this.m = m;
+    }
+
+    public void setE(int e) {
+        this.e = e;
+    }
 }
