@@ -25,10 +25,9 @@ public class PrivateKey {
 	public PrivateKey generatePrivateKey(PublicKey publicKey){
     	PrivateKey privateKey = new PrivateKey();
     	
-		BigInteger a = publicKey.getE(); // a = e
+		BigInteger a = BigInteger.valueOf(publicKey.getE()); // a = e
 		BigInteger b = publicKey.getM(); // b = m			 
-	
-		
+
 		//BigInteger r; // r = a * u + b * v = pgcd(a, b) 
 	
 		//Initialisation

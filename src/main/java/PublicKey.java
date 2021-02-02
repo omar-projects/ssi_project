@@ -16,7 +16,7 @@ public class PublicKey {
     private int e;
 
     /**
-     * Crée une clef publique
+     * Constructeur qui crée une clef publique
      * n = p*q
      * m = (p-1)*(q-1)
      */
@@ -35,6 +35,14 @@ public class PublicKey {
         while(this.e % 2 == 0 || !this.m.gcd(BigInteger.valueOf(this.e)).equals(BigInteger.ONE)){
             this.e = new Random().nextInt();
         }
+    }
+
+    public PublicKey(BigInteger p, BigInteger q, BigInteger n, BigInteger m, int e) {
+        this.p = p;
+        this.q = q;
+        this.n = n;
+        this.m = m;
+        this.e = e;
     }
 
     @Override
