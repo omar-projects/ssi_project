@@ -1,3 +1,8 @@
+
+target/
+target/**
+
+
 ######################
 # Eclipse
 ######################
@@ -51,7 +56,6 @@ out/
 # Maven
 ######################
 /log/
-*/target/
 
 ######################
 # Gradle
@@ -128,4 +132,6 @@ Desktop.ini
 # node_modules/
 ######################
 node_modules/
-/target/
+
+
+

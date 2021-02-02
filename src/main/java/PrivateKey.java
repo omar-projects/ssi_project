@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.math.BigInteger;
 
 
-public class PrivateKey {
+public class PrivateKey implements Serializable {
     /**
      * Coefficient de Bézout
      */
@@ -22,7 +23,7 @@ public class PrivateKey {
      * Génèrer une clé privée
      * @return une clé privée
      */
-	public PrivateKey generatePrivateKey(PublicKey publicKey){
+	public static PrivateKey generatePrivateKey(PublicKey publicKey){
     	PrivateKey privateKey = new PrivateKey();
     	
 		BigInteger a = BigInteger.valueOf(publicKey.getE()); // a = e

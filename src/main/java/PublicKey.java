@@ -1,12 +1,13 @@
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Random;
 
-public class PublicKey {
+public class PublicKey implements Serializable {
 
-    final Logger logger = LoggerFactory.getLogger(PublicKey.class);
+//    final Logger logger = LoggerFactory.getLogger(PublicKey.class);
 
 //    p, q, n, m, e
     private BigInteger p;
@@ -21,7 +22,7 @@ public class PublicKey {
      * m = (p-1)*(q-1)
      */
     public PublicKey() {
-        logger.info("lancement constructeur PublicKey()");
+//        logger.info("lancement constructeur PublicKey()");
         this.p = BigInteger.probablePrime(1999, new Random());
         this.q = BigInteger.probablePrime(1999, new Random());
         while(p.equals(q)){
@@ -56,9 +57,6 @@ public class PublicKey {
         return stringBuilder.toString();
     }
 
-    public Logger getLogger() {
-        return logger;
-    }
 
     public BigInteger getP() {
         return p;

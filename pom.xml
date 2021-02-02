@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fr.univ.angers.ssi</groupId>
   <artifactId>ssi_project</artifactId>
-  <packaging>pom</packaging>
+<!--  <packaging>jar</packaging>-->
   <version>0.0.1-SNAPSHOT</version>
 
   <name>ssi_project</name>
@@ -31,5 +31,22 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 
 </project>
