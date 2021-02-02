@@ -2,7 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fr.univ.angers.ssi</groupId>
   <artifactId>ssi_project</artifactId>
+  <packaging>pom</packaging>
   <version>0.0.1-SNAPSHOT</version>
+
   <name>ssi_project</name>
 
   <properties>
