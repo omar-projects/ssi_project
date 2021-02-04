@@ -33,7 +33,7 @@ public class PublicKey implements Serializable {
         // génération de e : un nombre premier avec m
         this.e = new Random().nextInt();
         // tant que e est pair ou il n'est pas premier avec m on lui donne une nouvelle valeure
-        while(this.e % 2 == 0 || !this.m.gcd(BigInteger.valueOf(this.e)).equals(BigInteger.ONE)){
+        while(this.e % 2 == 0 || !this.m.gcd(BigInteger.valueOf(this.e)).equals(BigInteger.ONE) || e < 0){
             this.e = new Random().nextInt();
         }
     }

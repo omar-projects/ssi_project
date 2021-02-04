@@ -13,12 +13,24 @@ public class Main {
 
         Character c = sc.next().charAt(0);
 
+        String port;
         switch (c) {
             case 's':
-                createServer();
+                System.out.println("Saisissez le port du communication :");
+                sc = new Scanner ( System.in );
+                port = sc.nextLine();
+                createServer(Integer.parseInt(port));
                 break;
             case 'c':
-                createClient();
+                System.out.println("Saisissez l'adresse IP du serveur :");
+                sc = new Scanner ( System.in );
+                String ip = sc.nextLine();
+
+                System.out.println("Saisissez le port du communication :");
+                sc = new Scanner ( System.in );
+                port = sc.nextLine();
+
+                createClient(ip, Integer.parseInt(port));
                 break;
             default:
                 main(args);
@@ -29,27 +41,37 @@ public class Main {
 
     }
 
-    public static void createServer() throws IOException, ClassNotFoundException {
+    /**
+     * La méthode qui permet de créer un serveur, après la création le serveur est en écoute sur port
+     * @param port : le port d'écoute du serveur
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public static void createServer(int port) throws IOException, ClassNotFoundException {
         PublicKey serverPublicKey = new PublicKey();
         PrivateKey serverPrivateKey = PrivateKey.generatePrivateKey(serverPublicKey);
 
-        ServerSocket serverSocket = new ServerSocket(4451);
+        ServerSocket serverSocket = new ServerSocket(port);
 
-        System.out.println("le serveur à bien été lancer");
+        System.out.println("le serveur à bien été lancer - Port : " + port);
         Socket socket = serverSocket.accept();
-        System.out.println("Serveur : un client a bien été connecté");
+        System.out.println("Serveur: un client a bien été connecté");
+        System.out.println();
 
         // on récupère le flux d'entrée puis la clé publique
         InputStream inputStream = socket.getInputStream();
         ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
         PublicKey clientPublicKey = (PublicKey) objectInputStream.readObject();
         System.out.println("Client : "+ clientPublicKey.getN() + " " + clientPublicKey.getE());
+        System.out.println("Serveur: La clé publique du client a bien été récupéré, je lui envoie la mienne");
+        System.out.println();
 
         // on récupère le flux de sortie on écrit dedans la clé public du serveur
         OutputStream outputStream = socket.getOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
         objectOutputStream.writeObject(serverPublicKey);
-        System.out.println("Server : "+ serverPublicKey.getE() + " " + clientPublicKey.getN());
+        System.out.println("Serveur: "+ serverPublicKey.getN() + " " + clientPublicKey.getE());
+        System.out.println();
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         PrintWriter printWriter = new PrintWriter(new BufferedOutputStream(outputStream));
@@ -58,36 +80,54 @@ public class Main {
         boolean exit = false;
         while(!exit) {
             String cryptedMsg = bufferedReader.readLine();
-            System.out.println("apres lecture du message "+cryptedMsg);
+//            afficcher le message reçu avant de le décrypté
+//            System.out.println("message crypté = "+cryptedMsg);
+            System.out.println("Serveur: Message reçu. Il sera déchiffré et affiché");
             String decryptedMsg = RSAEncryptionService.decryption(serverPrivateKey, cryptedMsg);
+
             System.out.println("Client : " + decryptedMsg);
-            System.out.println("Server : vous m'avez envoyer " + decryptedMsg);
+            if(decryptedMsg.equals("exit")){
+                exit = true;
+                continue;
+            }
+
+
+            System.out.println("Serveur: Vous m'avez envoyer " + decryptedMsg);
             printWriter.println(RSAEncryptionService.encrypt("vous m'avez envoyer " + decryptedMsg, clientPublicKey));
             printWriter.flush();
+            System.out.println();
         }
+
+        System.out.println("exit serveur");
+        System.exit(0);
 
         socket.close();
     }
 
-    private static void createClient() {
-
-        System.out.println("Start Client");
+    /**
+     * Création du client qui va se connecter au serveur de l'adresse donnée et envoie des message chiffré sur le port donnée
+     * @param ip : adresse ip du serveur au quel le client va se connecter
+     * @param port
+     */
+    private static void createClient(String ip, int port) {
+        System.out.println("Start Client - "+ip+" - "+port);
         try {
+            Socket clientSocket = new Socket(ip,port);
 
-            Socket clientSocket = new Socket("127.0.0.1",4451);
+            // création de la paire clé publique clé privée
+            PublicKey clientPublicKey = new PublicKey();
+            PrivateKey serverPrivateKey = PrivateKey.generatePrivateKey(clientPublicKey);
 
-            PublicKey alicePublicKey = new PublicKey();
-            PrivateKey alicePrivateKey = PrivateKey.generatePrivateKey(alicePublicKey);
-
-
-            // on récupère le flux de sortie on écrit dedans la clé public d'Alice
+            System.out.println("Client : 'J'envoie ma clé public au client ...");
+            // on récupère le flux de sortie on écrit dedans la clé public du client (Alice)
             OutputStream outputStream = clientSocket.getOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(alicePublicKey);
+            objectOutputStream.writeObject(clientPublicKey);
+            System.out.println("Client : "+ clientPublicKey.getN() + " " + clientPublicKey.getE());
+            System.out.println();
 
 
-
-            // on récupère le flux d'entrée puis la clé publique de Bob
+            // on récupère le flux d'entrée qui contient la clé publique du serveur (Bob)
             InputStream inputStream = clientSocket.getInputStream();
             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
 
@@ -96,37 +136,40 @@ public class Main {
 
 
             PublicKey serverPublicKey = (PublicKey) objectInputStream.readObject();
-            System.out.println("Client : cle publique du serveur recupere = "+ serverPublicKey.getN() + " " + serverPublicKey.getE());
+            System.out.println("Serveur: "+ serverPublicKey.getN() + " " + serverPublicKey.getE());
+            System.out.println("Client : La clé publique du serveur a bien été recupéré ");
+            System.out.println();
 
 
             String msg = null;
 
-            while(true) {
+            boolean exit = false;
+            while(!exit) {
                 Scanner sc = new Scanner(System.in);
-                System.out.print("\033[1;36mAlice >\033[1;37m ");
+                System.out.print("Client : ");
                 msg = sc.nextLine();
 
-                if(msg.equals("exit")){
-                    break;
-                }
-
-                //envoi de la chaine
-                System.out.println("\033[1;36mAlice >\033[1;37m Envoi du message chiffré en cours...");
+                //envoi d'un message
+                System.out.println("Client : Un message chiffré a été envoyer au serveur");
                 printWriter.println(RSAEncryptionService.encrypt(msg, serverPublicKey));
                 printWriter.flush();
 
-                //lecture de la reception
+                if(msg.equals("exit")){
+                    exit = true;
+                    continue;
+                }
+                //lire un message reçu
                 msg = bufferedReader.readLine();
 
-
-                System.out.println("\033[1;36mAlice >\033[1;37m Message reçu. Déchiffrement en cours...");
-                System.out.println("\033[1;33mBob >\033[1;37m " + RSAEncryptionService.decryption(alicePrivateKey,msg));
+                System.out.println("Client : Message reçu. Il sera déchiffré et affiché");
+                System.out.println("Serveur: " + RSAEncryptionService.decryption(serverPrivateKey,msg));
                 System.out.println();
             }
 
             // close client socket
             clientSocket.close();
-            System.out.println("Fermeture du client...");
+            System.out.println("exit client");
+            System.exit(0);
 
         } catch (Exception e) {
             System.out.println("Erreur dans le fonctionnement du client !");
