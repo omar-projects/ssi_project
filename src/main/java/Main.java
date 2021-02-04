@@ -55,23 +55,23 @@ public class Main {
 
         System.out.println("le serveur à bien été lancer - Port : " + port);
         Socket socket = serverSocket.accept();
-        System.out.println("Serveur: un client a bien été connecté");
+        System.out.println("Serveur(Bob)  : un client a bien été connecté");
         System.out.println();
 
         // on récupère le flux d'entrée puis la clé publique
         InputStream inputStream = socket.getInputStream();
         ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
         PublicKey clientPublicKey = (PublicKey) objectInputStream.readObject();
-        System.out.println("Client : "+ clientPublicKey.getN() + " " + clientPublicKey.getE());
+        System.out.println("Client(Alice) : "+ clientPublicKey.getN() + " " + clientPublicKey.getE());
         System.out.println();
-        System.out.println("Serveur: La clé publique du client a bien été récupéré, je lui envoie la mienne ...");
+        System.out.println("Serveur(Bob)  : La clé publique du client a bien été récupéré, je lui envoie la mienne ...");
         System.out.println();
 
         // on récupère le flux de sortie on écrit dedans la clé public du serveur
         OutputStream outputStream = socket.getOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
         objectOutputStream.writeObject(serverPublicKey);
-        System.out.println("Serveur: "+ serverPublicKey.getN() + " " + clientPublicKey.getE());
+        System.out.println("Serveur(Bob)  : "+ serverPublicKey.getN() + " " + clientPublicKey.getE());
         System.out.println();
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -82,16 +82,16 @@ public class Main {
             String cryptedMsg = bufferedReader.readLine();
 //            afficcher le message reçu avant de le décrypté
 //            System.out.println("message crypté = "+cryptedMsg);
-            System.out.println("Serveur: Message reçu. Il sera déchiffré et affiché");
+            System.out.println("Serveur(Bob)  : Message reçu. Il sera déchiffré et affiché");
             String decryptedMsg = RSAEncryptionService.decryption(serverPrivateKey, cryptedMsg);
 
-            System.out.println("Client : " + decryptedMsg);
+            System.out.println("Client(Alice) : " + decryptedMsg);
             if(decryptedMsg.equals("exit")){
                 exit = true;
                 continue;
             }
 
-            System.out.println("Serveur: Vous m'avez envoyer " + decryptedMsg);
+            System.out.println("Serveur(Bob)  : Vous m'avez envoyer " + decryptedMsg);
             printWriter.println(RSAEncryptionService.encrypt("vous m'avez envoyer " + decryptedMsg, clientPublicKey));
             printWriter.flush();
             System.out.println();
@@ -117,12 +117,12 @@ public class Main {
             PublicKey clientPublicKey = new PublicKey();
             PrivateKey clientPrivateKey = PrivateKey.generatePrivateKey(clientPublicKey);
 
-            System.out.println("Client : 'J'envoie ma clé public au serveur ...");
+            System.out.println("Client(Alice) : 'J'envoie ma clé public au serveur ...");
             // on récupère le flux de sortie on écrit dedans la clé public du client (Alice)
             OutputStream outputStream = clientSocket.getOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
             objectOutputStream.writeObject(clientPublicKey);
-            System.out.println("Client : "+ clientPublicKey.getN() + " " + clientPublicKey.getE());
+            System.out.println("Client(Alice) : "+ clientPublicKey.getN() + " " + clientPublicKey.getE());
             System.out.println();
 
 
@@ -135,8 +135,8 @@ public class Main {
 
 
             PublicKey serverPublicKey = (PublicKey) objectInputStream.readObject();
-            System.out.println("Serveur: "+ serverPublicKey.getN() + " " + serverPublicKey.getE());
-            System.out.println("Client : La clé publique du serveur a bien été recupéré ");
+            System.out.println("Serveur(Bob)  : "+ serverPublicKey.getN() + " " + serverPublicKey.getE());
+            System.out.println("Client(Alice) : La clé publique du serveur a bien été recupéré ");
             System.out.println();
 
             String msg = null;
@@ -144,11 +144,11 @@ public class Main {
             boolean exit = false;
             while(!exit) {
                 Scanner sc = new Scanner(System.in);
-                System.out.print("Client : ");
+                System.out.print("Client(Alice) : ");
                 msg = sc.nextLine();
 
                 //envoi d'un message
-                System.out.println("Client : Un message chiffré a été envoyer au serveur");
+                System.out.println("Client(Alice) : Un message chiffré a été envoyer au serveur");
                 printWriter.println(RSAEncryptionService.encrypt(msg, serverPublicKey));
                 printWriter.flush();
 
@@ -159,8 +159,8 @@ public class Main {
                 //lire un message reçu
                 msg = bufferedReader.readLine();
 
-                System.out.println("Client : Message reçu. Il sera déchiffré et affiché");
-                System.out.println("Serveur: " + RSAEncryptionService.decryption(clientPrivateKey,msg));
+                System.out.println("Client(Alice) : Message reçu. Il sera déchiffré et affiché");
+                System.out.println("Serveur(Bob): " + RSAEncryptionService.decryption(clientPrivateKey,msg));
                 System.out.println();
             }
 
