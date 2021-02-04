@@ -160,7 +160,7 @@ public class Main {
                 msg = bufferedReader.readLine();
 
                 System.out.println("Client(Alice) : Message reçu. Il sera déchiffré et affiché");
-                System.out.println("Serveur(Bob): " + RSAEncryptionService.decryption(clientPrivateKey,msg));
+                System.out.println("Serveur(Bob)  : " + RSAEncryptionService.decryption(clientPrivateKey,msg));
                 System.out.println();
             }
 
