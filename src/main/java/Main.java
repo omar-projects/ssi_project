@@ -115,7 +115,7 @@ public class Main {
 
             // création de la paire clé publique clé privée
             PublicKey clientPublicKey = new PublicKey();
-            PrivateKey serverPrivateKey = PrivateKey.generatePrivateKey(clientPublicKey);
+            PrivateKey clientPrivateKey = PrivateKey.generatePrivateKey(clientPublicKey);
 
             System.out.println("Client : 'J'envoie ma clé public au serveur ...");
             // on récupère le flux de sortie on écrit dedans la clé public du client (Alice)
@@ -160,7 +160,7 @@ public class Main {
                 msg = bufferedReader.readLine();
 
                 System.out.println("Client : Message reçu. Il sera déchiffré et affiché");
-                System.out.println("Serveur: " + RSAEncryptionService.decryption(serverPrivateKey,msg));
+                System.out.println("Serveur: " + RSAEncryptionService.decryption(clientPrivateKey,msg));
                 System.out.println();
             }
 
