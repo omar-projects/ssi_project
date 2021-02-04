@@ -18,23 +18,23 @@ public class RSAEncryptionService {
     }
 
     /**
-     * Dechiffre un texte avec une clé privée
-     * @return le texte déchiffré
+     * cette fonction permet de décrypter un message avec la clée privée
+     * @param privateKey
+     * @param msg    
+     * @return message décrypté
      */
-    public static String decryption(PrivateKey privateKey, String txt){
-        String[] wordTab = txt.split(" ");
+    public static String decryption(PrivateKey privateKey, String msg){
+        String[] wordTab = msg.split(" "); // msg : 386 737 970 204 1858
         String decryptResult = "";
-        int tmp_int;
         String tmp_str;
         BigInteger val_char;
 
         //Déchiffrement
         for(int i = 0; i < wordTab.length; ++i){
             val_char = new BigInteger(wordTab[i]);
-            val_char = val_char.modPow(privateKey.getU(), privateKey.getN());
+            val_char = val_char.modPow(privateKey.getU(), privateKey.getN()); // S u i mod n la clé privée (n, u)
             tmp_str = val_char + "";
-            tmp_int = Integer.parseInt(tmp_str);
-            decryptResult += (char)tmp_int;
+            decryptResult += (char)Integer.parseInt(tmp_str); // chiffre to lettre
         }
         return decryptResult;
     }
