@@ -5,7 +5,6 @@ import org.junit.Test;
 import java.math.BigInteger;
 
 public class RSAEncryptionServiceTest {
-//    final Logger logger = LoggerFactory.getLogger(RSAEncryptionServiceTest.class);
 
     @Test
     public void testEncrypt(){

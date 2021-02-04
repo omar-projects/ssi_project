@@ -63,7 +63,8 @@ public class Main {
         ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
         PublicKey clientPublicKey = (PublicKey) objectInputStream.readObject();
         System.out.println("Client : "+ clientPublicKey.getN() + " " + clientPublicKey.getE());
-        System.out.println("Serveur: La clé publique du client a bien été récupéré, je lui envoie la mienne");
+        System.out.println();
+        System.out.println("Serveur: La clé publique du client a bien été récupéré, je lui envoie la mienne ...");
         System.out.println();
 
         // on récupère le flux de sortie on écrit dedans la clé public du serveur
@@ -75,7 +76,6 @@ public class Main {
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         PrintWriter printWriter = new PrintWriter(new BufferedOutputStream(outputStream));
-
 
         boolean exit = false;
         while(!exit) {
@@ -90,7 +90,6 @@ public class Main {
                 exit = true;
                 continue;
             }
-
 
             System.out.println("Serveur: Vous m'avez envoyer " + decryptedMsg);
             printWriter.println(RSAEncryptionService.encrypt("vous m'avez envoyer " + decryptedMsg, clientPublicKey));
@@ -118,7 +117,7 @@ public class Main {
             PublicKey clientPublicKey = new PublicKey();
             PrivateKey serverPrivateKey = PrivateKey.generatePrivateKey(clientPublicKey);
 
-            System.out.println("Client : 'J'envoie ma clé public au client ...");
+            System.out.println("Client : 'J'envoie ma clé public au serveur ...");
             // on récupère le flux de sortie on écrit dedans la clé public du client (Alice)
             OutputStream outputStream = clientSocket.getOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
@@ -139,7 +138,6 @@ public class Main {
             System.out.println("Serveur: "+ serverPublicKey.getN() + " " + serverPublicKey.getE());
             System.out.println("Client : La clé publique du serveur a bien été recupéré ");
             System.out.println();
-
 
             String msg = null;
 

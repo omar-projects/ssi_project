@@ -1,13 +1,10 @@
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+
 
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Random;
 
 public class PublicKey implements Serializable {
-
-//    final Logger logger = LoggerFactory.getLogger(PublicKey.class);
 
 //    p, q, n, m, e
     private BigInteger p;
@@ -17,22 +14,22 @@ public class PublicKey implements Serializable {
     private int e;
 
     /**
-     * Constructeur qui crée une clef publique
+     * Constructeur qui crée une clé publique
      * n = p*q
      * m = (p-1)*(q-1)
      */
     public PublicKey() {
-//        logger.info("lancement constructeur PublicKey()");
         this.p = BigInteger.probablePrime(1999, new Random());
         this.q = BigInteger.probablePrime(1999, new Random());
+        // si p est égale à q on régénére q
         while(p.equals(q)){
             this.q = BigInteger.probablePrime(1999, new Random());
         }
-        this.n = this.p.multiply(q);
-        this.m = (this.p.subtract(BigInteger.ONE)).multiply(this.q.subtract(BigInteger.ONE));
+        this.n = this.p.multiply(q); // n = p*q
+        this.m = (this.p.subtract(BigInteger.ONE)).multiply(this.q.subtract(BigInteger.ONE)); // m = (p-1)(q-1)
         // génération de e : un nombre premier avec m
         this.e = new Random().nextInt();
-        // tant que e est pair ou il n'est pas premier avec m on lui donne une nouvelle valeure
+        // tant que e est pair ou il n'est pas premier avec m on lui donne une nouvelle valeure, on verifie aussi que p est impair et positif
         while(this.e % 2 == 0 || !this.m.gcd(BigInteger.valueOf(this.e)).equals(BigInteger.ONE) || e < 0){
             this.e = new Random().nextInt();
         }
